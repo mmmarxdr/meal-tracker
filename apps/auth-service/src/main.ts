@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AuthServiceModule } from './auth-service.module';
+import { AllExceptionsFilter } from './infrastructure/filters/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -13,6 +14,9 @@ async function bootstrap() {
       },
     },
   );
+
+  app.useGlobalFilters(new AllExceptionsFilter());
+
   await app.listen();
   console.log('Auth Service is listening on TCP port 3001');
 }
