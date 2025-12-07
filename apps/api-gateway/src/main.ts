@@ -1,8 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { ApiGatewayModule } from './api-gateway.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { RpcToHttpExceptionFilter } from './filters/rpc-to-http-exception.filter';
 
 async function bootstrap() {
+  const logger = new Logger('ApiGateway');
   const app = await NestFactory.create(ApiGatewayModule);
 
   app.enableCors();
@@ -16,9 +18,11 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalFilters(new RpcToHttpExceptionFilter());
+
   const port = process.env.PORT || 3000;
 
   await app.listen(port);
-  console.log('API Gateway running on http://localhost:3000/api');
+  logger.log(`API Gateway is running on http://localhost:${port}/api`);
 }
 bootstrap();

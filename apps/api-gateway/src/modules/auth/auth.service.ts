@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
 import { firstValueFrom } from 'rxjs';
@@ -12,14 +12,24 @@ import {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @Inject('AUTH_SERVICE') private readonly authClient: ClientProxy,
   ) {}
 
   async register(dto: RegisterDto): Promise<RegisterResponseDto> {
-    return firstValueFrom(
-      this.authClient.send<RegisterResponseDto>(AUTH_PATTERNS.REGISTER, dto),
-    );
+    try {
+      this.logger.log(`Sending register request: ${JSON.stringify(dto)}`);
+      const result = await firstValueFrom(
+        this.authClient.send<RegisterResponseDto>(AUTH_PATTERNS.REGISTER, dto),
+      );
+      this.logger.log(`Register response: ${JSON.stringify(result)}`);
+      return result;
+    } catch (error) {
+      this.logger.error(`Register error: ${JSON.stringify(error)}`);
+      throw error;
+    }
   }
 
   async login(dto: LoginDto): Promise<LoginResponseDto> {

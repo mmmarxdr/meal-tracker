@@ -1,0 +1,44 @@
+# Dependencies
+node_modules
+*/node_modules
+
+# Build output (se genera en Docker)
+dist
+*/dist
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files (usamos variables de docker-compose)
+.env
+.env.*
+!.env.example
+
+# Test
+coverage
+.nyc_output
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker
+
+# Documentation
+README.md
+docs
